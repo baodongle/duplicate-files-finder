@@ -28,7 +28,7 @@ We need to find duplicate files that have the same content but not necessarily t
 
 ## Waypoint 1: Write a Python Script Skeleton
 
-Write a minimal Python executable script find_duplicate_files.py that accepts one mandatory argument -p or --path that identifies the root directory to start scanning for duplicate files.
+Write a minimal Python executable script **find_duplicate_files.py** that accepts one mandatory argument **-p** or **--path** that identifies the root directory to start scanning for duplicate files.
 
 ### Example
 
@@ -38,7 +38,7 @@ $ ./find_duplicate_files.py --path ~/whatever-directory
 
 ### Note
 
-You MUST use the Python standard module **argparse** ([https://docs.python.org/3/library/argparse.html]) to parse command-line options, arguments and sub-commands.
+You MUST use the Python standard module **argparse** (https://docs.python.org/3/library/argparse.html) to parse command-line options, arguments and sub-commands.
 
 ## Waypoint 2: Search for all the Files
 
@@ -60,7 +60,7 @@ Write a function **scan_files** that takes one argument **path** corresponding t
 
 ### Note
 
-You MUST use the Python function **os.walk** ([https://docs.python.org/3/library/os.html#os.walk]) to retrieve the list of files in every directory in the tree rooted at directory path.
+You MUST use the Python function **os.walk** (https://docs.python.org/3/library/os.html#os.walk) to retrieve the list of files in every directory in the tree rooted at directory path.
 
 *Note: the function **scan_files** MUST ignore symbolic links that resolve to directories and files.*
 
@@ -96,11 +96,11 @@ You MUST ignore empty files, which size is of 0 bytes.
 
 ## Waypoint 4: Generate a Hash Value for a File
 
-The content of a file can be reduced to a **checksum** ([https://en.wikipedia.org/wiki/Checksum]) (hash), also known as message digest.
+The content of a file can be reduced to a **checksum** (https://en.wikipedia.org/wiki/Checksum) (hash), also known as message digest.
 
-The actual procedure which yields the checksum from the file's content is called a checksum function or **checksum algorithm** ([https://en.wikipedia.org/wiki/Cryptographic_hash_function]).
+The actual procedure which yields the checksum from the file's content is called a checksum function or **checksum algorithm** (https://en.wikipedia.org/wiki/Cryptographic_hash_function).
 
-There are many cryptographic hash algorithms. The **MD5 message-digest algorithm** ([https://en.wikipedia.org/wiki/MD5]) is a widely used hash function producing a 128-bit hash value. The MD5 algorithm can be used to generate a compact digital fingerprint of a file.
+There are many cryptographic hash algorithms. The **MD5 message-digest algorithm** (https://en.wikipedia.org/wiki/MD5) is a widely used hash function producing a 128-bit hash value. The MD5 algorithm can be used to generate a compact digital fingerprint of a file.
 
 Files that have the same content are identified with the same hash value.
 
@@ -117,7 +117,7 @@ It is very unlikely that any two non-identical files in the real world will have
 
 ### Note
 
-You MUST use the Python module **hashlib** ([https://docs.python.org/3/library/hashlib.html]) to generate the hash value of a file's content.
+You MUST use the Python module **hashlib** (https://docs.python.org/3/library/hashlib.html) to generate the hash value of a file's content.
 
 ## Waypoint 5: Group Files by their Checksum
 
@@ -190,7 +190,7 @@ $ ./find_duplicate_files.py --path ~/downloads
 
 ### Note
 
-You MUST use the Python module **json** ([https://docs.python.org/3/library/json.html]) to serialize the list of duplicate files to a JSON formatted string.
+You MUST use the Python module **json** (https://docs.python.org/3/library/json.html) to serialize the list of duplicate files to a JSON formatted string.
 
 ---
 
@@ -202,7 +202,7 @@ Find another method to find duplicate files that would be much faster than using
 
 ### Note
 
-You CANNOT directly use the **filecmp** ([https://docs.python.org/3/library/filecmp.html]) Python module – it would have been too easy! – but you are definitively allowed to be inspired by this module.
+You CANNOT directly use the **filecmp** (https://docs.python.org/3/library/filecmp.html) Python module – it would have been too easy! – but you are definitively allowed to be inspired by this module.
 
 ---
 
