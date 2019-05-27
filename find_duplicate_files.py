@@ -7,7 +7,7 @@ from json import dumps
 from os import stat, walk
 from os.path import abspath, expanduser, getsize, islink, join
 from stat import S_IFMT, S_IFREG
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, AnyStr, Callable, List, Union
 
 BUFSIZE = 8 * 1024
 
@@ -26,7 +26,7 @@ def parse_arguments() -> Namespace:
 
 
 # Waypoint 2:
-def scan_files(path: str) -> List[str]:
+def scan_files(path: AnyStr) -> List[AnyStr]:
     """Search for all the files from the specified path.
 
     Args:
@@ -36,13 +36,13 @@ def scan_files(path: str) -> List[str]:
              from this specified path.
 
     """
-    return list(filter(lambda x: not islink(x),
-                       [join(root, f) for root, _, files in
-                        walk(abspath(expanduser(path))) for f in files]))
+    return [join(root, f) for root, _, files in
+            walk(abspath(expanduser(path))) for f in files if
+            not islink(join(root, f))]  # Ignore symbolic links
 
 
-def group_files(file_path_names: List[str], func: Callable) \
-        -> List[List[str]]:
+def group_files(file_path_names: List[AnyStr], func: Callable) \
+        -> List[List[AnyStr]]:
     """Group files according to a criterion.
 
     Args:
@@ -52,7 +52,7 @@ def group_files(file_path_names: List[str], func: Callable) \
     Returns: A list of groups of at least 2 files that have the same criterion.
 
     """
-    groups: Dict[Any, List[str]] = {}
+    groups = {}
     for filename in file_path_names:
         criterion = func(filename)
         if criterion:
@@ -62,7 +62,7 @@ def group_files(file_path_names: List[str], func: Callable) \
 
 
 # Waypoint 3:
-def group_files_by_size(file_path_names: List[str]) -> List[List[str]]:
+def group_files_by_size(file_path_names: List[AnyStr]) -> List[List[AnyStr]]:
     """Group files by their size.
 
     Args:
@@ -75,7 +75,7 @@ def group_files_by_size(file_path_names: List[str]) -> List[List[str]]:
 
 
 # Waypoint 4:
-def get_file_checksum(file_path: str) -> Union[str, None]:
+def get_file_checksum(file_path: AnyStr) -> Union[str, None]:
     """Generate the hash value of a file's content using md5 hash algorithm.
 
     Args:
@@ -92,8 +92,8 @@ def get_file_checksum(file_path: str) -> Union[str, None]:
 
 
 # Waypoint 5:
-def group_files_by_checksum(file_path_names: List[str]) \
-        -> List[List[str]]:
+def group_files_by_checksum(file_path_names: List[AnyStr]) \
+        -> List[List[AnyStr]]:
     """Group files by their checksum
 
     Args:
@@ -106,7 +106,7 @@ def group_files_by_checksum(file_path_names: List[str]) \
 
 
 # Waypoint 6:
-def find_duplicate_files(file_path_names: List[str]) -> List[List[str]]:
+def find_duplicate_files(file_path_names: List[AnyStr]) -> List[List[AnyStr]]:
     """Find all duplicate files.
 
     Args:
@@ -122,13 +122,13 @@ def find_duplicate_files(file_path_names: List[str]) -> List[List[str]]:
 
 
 # Waypoint 7:
-def print_output(result: Any) -> None:
-    """Write on the stdout a JSON expression corresponding to the result."""
-    print(dumps(result, indent=4))
+def serialize_output_to_json(result: Any) -> str:
+    """Serialize the result to a JSON formatted ``str``."""
+    return dumps(result, separators=(",\n", ""))
 
 
 # Waypoint 8:
-def compare_files(f1: str, f2: str) -> bool:
+def compare_files(f1: AnyStr, f2: AnyStr) -> bool:
     """Compare two files.
 
     Args:
@@ -168,8 +168,8 @@ def compare_files(f1: str, f2: str) -> bool:
     return _do_compare(f1, f2)
 
 
-def find_duplicate_files_by_comparing(file_path_names: List[str]) \
-        -> List[List[str]]:
+def find_duplicate_files_by_comparing(file_path_names: List[AnyStr]) \
+        -> List[List[AnyStr]]:
     """Find all duplicate files by comparing.
 
     Args:
@@ -185,6 +185,7 @@ def find_duplicate_files_by_comparing(file_path_names: List[str]) \
         for filename in file_path_names[1:]:
             if compare_files(current, filename):
                 group_duplicate_files.append(filename)
+        # Remove checked files:
         file_path_names = [e for e in file_path_names if
                            e not in set(group_duplicate_files)]
         if len(group_duplicate_files) > 1:  # groups of at least 2 files
@@ -196,9 +197,11 @@ def main() -> None:
     """Demonstration and running."""
     args = parse_arguments()
     if args.compare:
-        print_output(find_duplicate_files_by_comparing(scan_files(args.path)))
+        print(serialize_output_to_json(
+            find_duplicate_files_by_comparing(scan_files(args.path))))
     else:
-        print_output(find_duplicate_files(scan_files(args.path)))
+        print(serialize_output_to_json(
+            find_duplicate_files(scan_files(args.path))))
 
 
 if __name__ == '__main__':
